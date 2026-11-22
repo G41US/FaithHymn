@@ -43,11 +43,11 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-private const val HEADER_ITEMS = 4 // greeting, hymn of the day, recent, sort/chips header
+private const val HEADER_ITEMS = 5 // greeting, hymn of the day, topics, recent, sort/chips header
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
+fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit, openTopic: (String) -> Unit = {}) {
     val c = LocalIos.current
     val changes by app.repo.changes.collectAsStateWithLifecycle()
     val available by app.catalog.available.collectAsStateWithLifecycle()
@@ -55,6 +55,8 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
     var all by remember { mutableStateOf<List<HymnSummary>>(emptyList()) }
     var today by remember { mutableStateOf<Hymn?>(null) }
     var recent by remember { mutableStateOf<List<HymnSummary>>(emptyList()) }
+    var topics by remember { mutableStateOf<List<Pair<String, Int>>>(emptyList()) }
+    LaunchedEffect(Unit) { topics = app.repo.topics() }
     var pad by remember { mutableStateOf(false) }
     var mode by rememberSaveable { mutableIntStateOf(0) } // 0 List, 1 A–Z, 2 Numbers
     val az = mode == 1
@@ -72,6 +74,14 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
         LazyColumn(Modifier.fillMaxSize(), state = list, contentPadding = PaddingValues(bottom = LocalBarPadding.current + 16.dp)) {
             item(key = "greet") { Greeting(onPad = { pad = true }) }
             item(key = "today") { today?.let { TodayCard(app, it, available, open) } ?: Spacer(Modifier.height(1.dp)) }
+            item(key = "topics") {
+                if (topics.isNotEmpty()) Column {
+                    SectionHeader("Browse by topic")
+                    LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        itemsIndexed(topics, key = { _, t -> t.first }) { i, (name, count) -> TopicTile(name, count, i) { openTopic(name) } }
+                    }
+                } else Spacer(Modifier.height(1.dp))
+            }
             item(key = "recent") {
                 if (recent.isNotEmpty()) Column {
                     SectionHeader("Recently opened")
@@ -182,3 +192,34 @@ private fun TodayCard(app: FaithHymnApp, h: Hymn, available: Set<Int>, open: (In
     }
 }
 
+
+/** Cloth-bound "section" tile for a topic. */
+@Composable
+fun TopicTile(name: String, count: Int, index: Int, onClick: () -> Unit) {
+    Column(
+        Modifier.width(148.dp).height(96.dp).bounceClick(onClick).clip(RoundedCornerShape(14.dp))
+            .background(CoverGradients[index % CoverGradients.size][0]).padding(14.dp)
+    ) {
+        Text(name, color = Color(0xFFF7F0E3), fontFamily = Serif, fontWeight = FontWeight.SemiBold, fontSize = 17.sp, lineHeight = 20.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        Spacer(Modifier.weight(1f))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.width(16.dp).height(2.dp).background(Color(0xFFD9B46A)))
+            Text("  $count hymns", color = Color(0xFFF7F0E3).copy(alpha = 0.75f), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+/** All hymns in one topic. */
+@Composable
+fun TopicScreen(app: FaithHymnApp, topic: String, back: () -> Unit, open: (Int) -> Unit) {
+    val c = LocalIos.current
+    var items by remember { mutableStateOf<List<HymnSummary>>(emptyList()) }
+    val available by app.catalog.available.collectAsStateWithLifecycle()
+    LaunchedEffect(topic) { items = app.repo.topicHymns(topic) }
+    Column(Modifier.fillMaxSize().background(c.bg)) {
+        NavBar("", back, "Hymns")
+        LargeTitle(topic)
+        Text("${items.size} hymns", color = c.secondary, fontSize = 14.sp, modifier = Modifier.padding(start = 20.dp, bottom = 10.dp))
+        HymnList(items, open, Modifier.navigationBarsPadding())
+    }
+}

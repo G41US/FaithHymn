@@ -157,6 +157,21 @@ class HymnRepository(private val ctx: Context) {
     }
     suspend fun clearSearches() = io { user.writableDatabase.delete("searches", null, null); Unit }
 
+    // ---------------- topics ----------------
+    suspend fun topics(): List<Pair<String, Int>> = io {
+        hymnDb.rawQuery("SELECT topic, COUNT(*) FROM topics GROUP BY topic ORDER BY MIN(ord)", null).use { c ->
+            buildList { while (c.moveToNext()) add(c.getString(0) to c.getInt(1)) }
+        }
+    }
+    suspend fun topicHymns(topic: String): List<HymnSummary> = io {
+        hymnDb.rawQuery("SELECT h.number, h.title, h.first_line FROM topics t JOIN hymns h ON h.number = t.number WHERE t.topic = ? ORDER BY h.number", arrayOf(topic)).use { c ->
+            buildList { while (c.moveToNext()) add(HymnSummary(c.getInt(0), c.getString(1), c.getString(2))) }
+        }
+    }
+    suspend fun topicsFor(n: Int): List<String> = io {
+        hymnDb.rawQuery("SELECT topic FROM topics WHERE number = ? ORDER BY ord", arrayOf("$n")).use { c -> buildList { while (c.moveToNext()) add(c.getString(0)) } }
+    }
+
     /** Hymn of the day: same all day, changes daily. */
     suspend fun hymnOfTheDay(): HymnSummary? = io {
         val day = LocalDate.now().toEpochDay()
@@ -243,7 +258,7 @@ class HymnRepository(private val ctx: Context) {
     private fun now() = System.currentTimeMillis()
     private suspend fun <T> io(block: () -> T): T = withContext(Dispatchers.IO) { block() }
 
-    companion object { const val BUNDLED_VERSION = 4 }
+    companion object { const val BUNDLED_VERSION = 6 }
 }
 
 private class UserDb(ctx: Context) : SQLiteOpenHelper(ctx, "user.db", null, 2) {

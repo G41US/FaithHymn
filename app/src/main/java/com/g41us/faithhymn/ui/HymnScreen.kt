@@ -204,6 +204,9 @@ private fun HymnPage(app: FaithHymnApp, n: Int, fontSize: Float, serif: Boolean,
         }
         Spacer(Modifier.height(4.dp))
         Text(h.title.titleCase(), fontSize = (size * 1.4f).sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.5).sp, color = c.label, fontFamily = Sans, lineHeight = (size * 1.6f).sp)
+        var topics by remember { mutableStateOf<List<String>>(emptyList()) }
+        LaunchedEffect(n) { topics = app.repo.topicsFor(n) }
+        if (topics.isNotEmpty()) Text(topics.joinToString("  ·  "), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = c.secondary, modifier = Modifier.padding(top = 6.dp))
         if (hasParts) PartFilter(myPart) { v -> app.settings.update { it.copy(myPart = v) } }
         Spacer(Modifier.height(14.dp))
         Box(Modifier.androidxOnPositioned { lyricsTop = it }) {

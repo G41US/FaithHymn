@@ -94,7 +94,10 @@ private fun MainShell(app: FaithHymnApp, activity: MainActivity?) {
         Box(Modifier.fillMaxSize()) {
             NavHost(nav, startDestination = "hymns", modifier = Modifier.fillMaxSize().haze(haze),
                 enterTransition = { fadeIn(tween(180)) }, exitTransition = { fadeOut(tween(120)) }) {
-                composable("hymns") { HymnsScreen(app, open = { nav.navigate("hymn/$it") }) }
+                composable("hymns") { HymnsScreen(app, open = { nav.navigate("hymn/$it") }, openTopic = { nav.navigate("topic/${android.net.Uri.encode(it)}") }) }
+                composable("topic/{t}", enterTransition = { slideInHorizontally { it } }, popExitTransition = { slideOutHorizontally { it } }) { e ->
+                    TopicScreen(app, e.arguments?.getString("t").orEmpty(), back = { nav.popBackStack() }, open = { nav.navigate("hymn/$it") })
+                }
                 composable("search") { SearchScreen(app, open = { nav.navigate("hymn/$it") }) }
                 composable("library") { LibraryScreen(app, open = { nav.navigate("hymn/$it") }, openPlaylist = { nav.navigate("playlist/$it") }) }
                 composable("settings") { SettingsScreen(app) }
