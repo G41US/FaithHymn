@@ -93,9 +93,6 @@ fun SettingsScreen(app: FaithHymnApp) {
                     }
                 }
             }
-            Separator()
-            ListRow("Classic serif text", icon = { IconTile(Icons.Rounded.TextFields, Color(0xFFFF9500)) },
-                trailing = { Switch(s.serif, { v -> app.settings.update { it.copy(serif = v) } }, colors = iosSwitch()) })
         }
 
         SectionHeader("App icon")
@@ -125,7 +122,7 @@ fun SettingsScreen(app: FaithHymnApp) {
                     Text("A", fontSize = 26.sp, color = c.secondary)
                 }
                 Text("Praise to the Lord, the Almighty,\nthe King of creation!", fontSize = size.sp, lineHeight = (size * 1.45f).sp,
-                    color = c.label, fontFamily = if (s.serif) Serif else Sans)
+                    color = c.label, fontFamily = Serif)
                 Spacer(Modifier.height(4.dp))
                 Text("Tip: pinch on any hymn to resize.", fontSize = 13.sp, color = c.secondary)
             }

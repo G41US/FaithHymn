@@ -56,7 +56,8 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
     var today by remember { mutableStateOf<Hymn?>(null) }
     var recent by remember { mutableStateOf<List<HymnSummary>>(emptyList()) }
     var pad by remember { mutableStateOf(false) }
-    var az by rememberSaveable { mutableStateOf(false) }
+    var mode by rememberSaveable { mutableIntStateOf(0) } // 0 List, 1 A–Z, 2 Numbers
+    val az = mode == 1
     LaunchedEffect(Unit) { all = app.repo.all(); today = app.repo.hymnOfTheDay()?.let { app.repo.hymn(it.number) } }
     LaunchedEffect(changes) { recent = app.repo.recent(12) }
     val list = rememberLazyListState()
@@ -64,12 +65,8 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
     val sorted = remember(all, az) { if (az) all.sortedBy { sortKey(it.title) } else all }
     val collapsed by remember { derivedStateOf { list.firstVisibleItemIndex > 0 || list.firstVisibleItemScrollOffset > 120 } }
 
-    // Scrubber labels -> index in [sorted]
-    val marks: List<Pair<String, Int>> = remember(sorted, az) {
-        if (az) sorted.mapIndexed { i, h -> sortKey(h.title).first().uppercaseChar().toString() to i }.distinctBy { it.first }
-        else (listOf(1) + (100..1000 step 100)).map { n -> n.toString() to (n - 1) }
-    }
-    fun jump(i: Int) = scope.launch { list.scrollToItem(HEADER_ITEMS + i) }
+    val cols = 5
+    fun jump(i: Int) = scope.launch { list.scrollToItem(HEADER_ITEMS + if (mode == 2) i / cols else i) }
 
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize(), state = list, contentPadding = PaddingValues(bottom = LocalBarPadding.current + 16.dp)) {
@@ -92,18 +89,34 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
                 Column(Modifier.fillMaxWidth().background(c.bg).padding(top = if (collapsed) 44.dp else 0.dp).statusBarsPaddingIf(collapsed)) {
                     Row(Modifier.padding(start = 20.dp, end = 16.dp, top = 14.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                         Text("All ${all.size} hymns", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = c.label, modifier = Modifier.weight(1f))
-                        Segmented(listOf("123", "A–Z"), if (az) 1 else 0, { az = it == 1; scope.launch { list.scrollToItem(3) } }, Modifier.width(110.dp))
+                        Segmented(listOf("List", "A–Z", "Numbers"), mode, { mode = it; scope.launch { list.scrollToItem(3) } }, Modifier.width(210.dp))
                     }
                     if (!az) LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(bottom = 10.dp)) {
                         items((0 until 11).toList()) { k ->
                             val from = k * 100 + 1; val to = minOf(from + 99, 1001)
-                            val cur = list.firstVisibleItemIndex - HEADER_ITEMS + 1
+                            val cur = (list.firstVisibleItemIndex - HEADER_ITEMS) * (if (mode == 2) cols else 1) + 1
                             Chip(if (to == from) "$from" else "$from–$to", selected = cur in from..to && list.firstVisibleItemIndex >= HEADER_ITEMS) { jump(from - 1) }
                         }
                     }
                 }
             }
-            itemsIndexed(sorted, key = { _, h -> h.number }) { i, h ->
+            if (mode == 2) {
+                // Number boxes, like the original hymn book app: tap a number to open it.
+                val rows = sorted.chunked(cols)
+                itemsIndexed(rows, key = { i, _ -> "row$i" }) { _, row ->
+                    Row(Modifier.padding(horizontal = 16.dp, vertical = 5.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        row.forEach { h ->
+                            Box(Modifier.weight(1f).aspectRatio(1f).bounceClick { open(h.number) }.clip(RoundedCornerShape(14.dp)).background(c.card)
+                                .border(1.dp, c.separator, RoundedCornerShape(14.dp)), contentAlignment = Alignment.Center) {
+                                Text("${h.number}", fontSize = if (h.number >= 1000) 16.sp else 19.sp, fontWeight = FontWeight.Bold, color = c.label,
+                                    style = androidx.compose.ui.text.TextStyle(fontFeatureSettings = "tnum"))
+                                if (h.number in available) Box(Modifier.align(Alignment.TopEnd).padding(7.dp).size(5.dp).clip(CircleShape).background(c.accent))
+                            }
+                        }
+                        repeat(cols - row.size) { Spacer(Modifier.weight(1f)) }
+                    }
+                }
+            } else itemsIndexed(sorted, key = { _, h -> h.number }) { i, h ->
                 val shape = cornerFor(i, sorted.size)
                 Column(Modifier.padding(horizontal = 16.dp).clip(shape).background(c.card)) {
                     HymnRow(h, onClick = { open(h.number) }, audio = h.number in available, offline = h.number in downloaded)
@@ -114,12 +127,6 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
         CompactBar("Hymns", collapsed, Modifier.align(Alignment.TopCenter)) {
             CircleButton(Icons.Rounded.Dialpad, { pad = true }, size = 32)
         }
-        // Index strip only appears while scrolling (keeps the screen calm).
-        var showScrub by remember { mutableStateOf(false) }
-        LaunchedEffect(list.isScrollInProgress) { if (list.isScrollInProgress) showScrub = true else { kotlinx.coroutines.delay(1500); showScrub = false } }
-        androidx.compose.animation.AnimatedVisibility(showScrub && list.firstVisibleItemIndex >= HEADER_ITEMS - 1,
-            Modifier.align(Alignment.CenterEnd).padding(bottom = LocalBarPadding.current),
-            enter = androidx.compose.animation.fadeIn(), exit = androidx.compose.animation.fadeOut()) { Scrubber(marks, Modifier) { jump(it); showScrub = true } }
     }
     if (pad) NumberPad(app.repo.count, onDismiss = { pad = false }, onGo = { pad = false; open(it) })
 }
@@ -175,34 +182,3 @@ private fun TodayCard(app: FaithHymnApp, h: Hymn, available: Set<Int>, open: (In
     }
 }
 
-/** iOS Contacts-style index on the right edge. Drag or tap to jump. */
-@Composable
-private fun Scrubber(marks: List<Pair<String, Int>>, modifier: Modifier, jump: (Int) -> Unit) {
-    val c = LocalIos.current
-    val haptic = LocalHapticFeedback.current
-    var h by remember { mutableIntStateOf(1) }
-    var active by remember { mutableStateOf<String?>(null) }
-    fun pick(y: Float) {
-        val i = ((y / h) * marks.size).toInt().coerceIn(0, marks.lastIndex)
-        val (label, idx) = marks[i]
-        if (label != active) { active = label; haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove); jump(idx) }
-    }
-    Box(modifier) {
-        Column(
-            Modifier.padding(end = 2.dp).width(32.dp).onSizeChanged { h = it.height }
-                .pointerInput(marks) { detectTapGestures(onPress = { pick(it.y); tryAwaitRelease(); active = null }) }
-                .pointerInput(marks) { detectDragGestures(onDragEnd = { active = null }, onDragCancel = { active = null }) { ch, _ -> pick(ch.position.y) } },
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            marks.forEach { (l, _) ->
-                Text(l, fontSize = 10.sp, maxLines = 1, softWrap = false, fontWeight = FontWeight.SemiBold, color = c.accent,
-                    modifier = Modifier.padding(vertical = if (marks.size > 20) 0.dp else 3.dp))
-            }
-        }
-        active?.let { a ->
-            Box(Modifier.align(Alignment.CenterEnd).offset(x = (-56).dp).size(64.dp).shadow(8.dp, CircleShape).clip(CircleShape).background(c.accent), contentAlignment = Alignment.Center) {
-                Text(a, color = Color.White, fontSize = if (a.length > 2) 20.sp else 28.sp, fontWeight = FontWeight.Bold)
-            }
-        }
-    }
-}

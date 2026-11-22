@@ -42,6 +42,7 @@ class ScreenshotTest {
         shot("01_onboarding")
         tap("Skip"); shot("02_home")
         rule.onAllNodes(hasScrollToIndexAction()).onFirst().performScrollToIndex(12); shot("03_home_scrolled")
+        tap("Numbers"); shot("03b_numbers"); tap("List")
         rule.onAllNodes(hasScrollToIndexAction()).onFirst().performScrollToIndex(4)
 
         tap("All Hail, Immanuel!"); shot("04_reader_hymn1")

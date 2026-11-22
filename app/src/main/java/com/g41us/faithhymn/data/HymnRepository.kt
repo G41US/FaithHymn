@@ -243,7 +243,7 @@ class HymnRepository(private val ctx: Context) {
     private fun now() = System.currentTimeMillis()
     private suspend fun <T> io(block: () -> T): T = withContext(Dispatchers.IO) { block() }
 
-    companion object { const val BUNDLED_VERSION = 3 }
+    companion object { const val BUNDLED_VERSION = 4 }
 }
 
 private class UserDb(ctx: Context) : SQLiteOpenHelper(ctx, "user.db", null, 2) {

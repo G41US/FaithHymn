@@ -34,7 +34,7 @@ class SettingsStore(ctx: Context) {
         theme = ThemeMode.entries.getOrElse(p.getInt("theme", 0)) { ThemeMode.SYSTEM },
         fontSize = p.getFloat("font", 19f),
         keepScreenOn = p.getBoolean("screen_on", true),
-        serif = p.getBoolean("serif", true),
+        serif = true,
         accent = p.getInt("accent", 0),
         onboarded = p.getBoolean("onboarded", false),
         myPart = p.getString("my_part", null)?.let { runCatching { Voice.valueOf(it) }.getOrNull() },
