@@ -16,9 +16,14 @@ jobs:
     env:
       HAS_KEY: ${{ secrets.KEYSTORE_BASE64 != '' }}
       VERSION_CODE: ${{ github.run_number }}
-      VERSION_NAME: 3.0.${{ github.run_number }}
+      VERSION_NAME: placeholder
     steps:
       - uses: actions/checkout@v4
+      - name: Version
+        run: |
+          CODE=$((100 + ${{ github.run_number }}))
+          echo "VERSION_CODE=$CODE" >> $GITHUB_ENV
+          echo "VERSION_NAME=3.5.$CODE" >> $GITHUB_ENV
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
       - uses: gradle/actions/setup-gradle@v4
@@ -52,7 +57,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION_NAME }}
           name: FaithHymns ${{ env.VERSION_NAME }}
-          body: ${{ github.event.head_commit.message }}
+          body: FaithHymns update
           files: FaithHymns-*.apk
           make_latest: true
 

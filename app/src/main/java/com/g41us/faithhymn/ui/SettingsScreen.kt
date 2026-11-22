@@ -224,7 +224,6 @@ private fun UpdateGroup(app: FaithHymnApp) {
                 trailing = { CircularProgressIndicator(Modifier.size(20.dp), color = c.accent, strokeWidth = 2.dp) })
             is UpdateState.Available -> Column(Modifier.padding(16.dp)) {
                 Text("Version ${s.release.versionName} is available", fontSize = 17.sp, fontWeight = FontWeight.SemiBold, color = c.label)
-                if (s.release.notes.isNotBlank()) Text(s.release.notes.take(400), fontSize = 14.sp, color = c.secondary, modifier = Modifier.padding(top = 4.dp))
                 Spacer(Modifier.height(12.dp))
                 Button({ scope.launch { app.updater.download(s.release) } }, Modifier.fillMaxWidth().height(46.dp),
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp), colors = ButtonDefaults.buttonColors(containerColor = c.accent)) {
