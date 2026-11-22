@@ -6,6 +6,6 @@
     <path android:fillColor="#E6FFFFFF"
         android:pathData="M76,40c-6,-2 -13,-2 -20,2v30c7,-4 14,-4 20,-2z"/>
     <!-- music note -->
-    <path android:fillColor="#FF5B47F0"
+    <path android:fillColor="#FF8A2A35"
         android:pathData="M64,46l8,-2v14a3.5,3 0 1,1 -2,-2.6v-8.4l-4,1v10a3.5,3 0 1,1 -2,-2.6z"/>
 </vector>

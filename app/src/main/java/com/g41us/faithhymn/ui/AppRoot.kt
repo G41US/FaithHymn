@@ -167,8 +167,8 @@ private fun MiniPlayer(app: FaithHymnApp, onOpen: () -> Unit) {
                 .clip(RoundedCornerShape(14.dp)).background(c.card).clickable(onClick = onOpen)
         ) {
             Row(Modifier.padding(start = 10.dp, end = 4.dp, top = 8.dp, bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(38.dp).clip(RoundedCornerShape(9.dp)).background(Brush.linearGradient(CoverGradients[0])), contentAlignment = Alignment.Center) {
-                    Text("${st.number ?: ""}", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                Box(Modifier.size(38.dp).clip(RoundedCornerShape(9.dp)).background(c.accent), contentAlignment = Alignment.Center) {
+                    Text("${st.number ?: ""}", color = if (c.dark) c.bg else Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
                 }
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {

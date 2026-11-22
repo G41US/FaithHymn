@@ -57,8 +57,10 @@ fun Separator(start: Int = 16) {
 /** Square rounded "settings" style icon, like iOS. */
 @Composable
 fun IconTile(icon: ImageVector, tint: Color, size: Int = 29) {
-    Box(Modifier.size(size.dp).clip(RoundedCornerShape((size * 0.23f).dp)).background(tint), contentAlignment = Alignment.Center) {
-        Icon(icon, null, tint = Color.White, modifier = Modifier.size((size * 0.62f).dp))
+    // Calm, single-colour tiles (tint kept for API compatibility).
+    val c = LocalIos.current
+    Box(Modifier.size(size.dp).clip(RoundedCornerShape((size * 0.27f).dp)).background(c.fill), contentAlignment = Alignment.Center) {
+        Icon(icon, null, tint = c.accent, modifier = Modifier.size((size * 0.6f).dp))
     }
 }
 
@@ -93,10 +95,9 @@ fun HymnRow(h: HymnSummary, onClick: () -> Unit, audio: Boolean = false, offline
         Modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(Modifier.size(44.dp).clip(RoundedCornerShape(10.dp)).background(c.accent.copy(alpha = if (c.dark) 0.25f else 0.12f)), contentAlignment = Alignment.Center) {
-            Text("${h.number}", color = c.accent, fontWeight = FontWeight.ExtraBold, fontSize = if (h.number >= 1000) 13.sp else 15.sp, letterSpacing = (-0.3).sp, style = androidx.compose.ui.text.TextStyle(fontFeatureSettings = "tnum"))
-        }
-        Spacer(Modifier.width(12.dp))
+        Text("${h.number}", color = c.accent, fontWeight = FontWeight.Bold, fontSize = 15.sp, textAlign = androidx.compose.ui.text.style.TextAlign.End,
+            style = androidx.compose.ui.text.TextStyle(fontFeatureSettings = "tnum"), modifier = Modifier.width(38.dp))
+        Spacer(Modifier.width(16.dp))
         Column(Modifier.weight(1f)) {
             androidx.compose.foundation.layout.Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(h.title.titleCase(), fontSize = 16.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.2).sp, color = c.label, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
@@ -156,7 +157,7 @@ fun Segmented(options: List<String>, selected: Int, onSelect: (Int) -> Unit, mod
         options.forEachIndexed { i, o ->
             Box(
                 Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(7.dp))
-                    .background(if (i == selected) (if (c.dark) Color(0xFF636366) else Color.White) else Color.Transparent)
+                    .background(if (i == selected) (if (c.dark) Color(0xFF3A3530) else Color.White) else Color.Transparent)
                     .clickable { onSelect(i) },
                 contentAlignment = Alignment.Center,
             ) { Text(o, fontSize = 13.sp, fontWeight = if (i == selected) FontWeight.SemiBold else FontWeight.Normal, color = c.label) }

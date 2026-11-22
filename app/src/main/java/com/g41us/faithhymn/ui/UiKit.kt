@@ -1,6 +1,7 @@
 package com.g41us.faithhymn.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -73,7 +74,7 @@ fun PartPill(part: Part, dim: Boolean = false) {
     val colors = if (part.everyone) listOf(c.secondary, c.secondary) else part.voices.sortedBy { it.ordinal }.map(::voiceColor).let { if (it.size == 1) it + it else it }
     Row(
         Modifier.padding(end = 6.dp).clip(RoundedCornerShape(6.dp))
-            .background(Brush.horizontalGradient(colors.map { it.copy(alpha = if (c.dark) 0.30f else 0.16f) }))
+            .background(colors.first().copy(alpha = if (part.everyone) 0f else if (c.dark) 0.22f else 0.10f))
             .padding(horizontal = 6.dp, vertical = 1.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -94,21 +95,21 @@ fun DynamicBadge(d: String, onClick: (() -> Unit)? = null) {
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier).padding(horizontal = 5.dp))
 }
 
+/** Playlist / artwork tones: flat cloth-binding colours (two near-identical stops = solid). */
+private fun flat(c: Long) = Color(c).let { listOf(it, it) }
 val CoverGradients = listOf(
-    listOf(Color(0xFF8E6CFF), Color(0xFF4A3AE0)), listOf(Color(0xFFFF9A62), Color(0xFFE0406A)),
-    listOf(Color(0xFF43C6AC), Color(0xFF167C8A)), listOf(Color(0xFFF7C948), Color(0xFFE07A12)),
-    listOf(Color(0xFF5AC8FA), Color(0xFF1C5FD6)), listOf(Color(0xFFFF6FA5), Color(0xFF9B30D9)),
-    listOf(Color(0xFF7BD389), Color(0xFF248A3D)), listOf(Color(0xFF4B4B63), Color(0xFF15151F)),
+    flat(0xFF7A2630), flat(0xFF2E5B45), flat(0xFF244A75), flat(0xFF8E6420),
+    flat(0xFF4F3053), flat(0xFF3A3632), flat(0xFF6B4A2E), flat(0xFF2F4F55),
 )
 
 /** Gradient tile for a playlist, with a short title (or hymn numbers) on it. */
 @Composable
 fun PlaylistCover(name: String, color: Int, modifier: Modifier = Modifier, numbers: List<Int> = emptyList(), big: Boolean = false) {
     Box(modifier.clip(RoundedCornerShape(if (big) 22.dp else 14.dp)).background(Brush.linearGradient(CoverGradients[color % CoverGradients.size])).padding(if (big) 18.dp else 12.dp)) {
-        Icon(Icons.Rounded.MusicNote, null, tint = Color.White.copy(alpha = 0.18f), modifier = Modifier.align(Alignment.BottomEnd).size(if (big) 96.dp else 56.dp).offset(x = 10.dp, y = 10.dp))
+        Box(Modifier.align(Alignment.BottomStart).width(if (big) 36.dp else 22.dp).height(2.dp).background(Color(0xFFD9B46A)))
         Column {
-            Text(name, color = Color.White, fontWeight = FontWeight.Bold, fontSize = if (big) 26.sp else 17.sp, maxLines = 2, lineHeight = if (big) 30.sp else 20.sp)
-            if (numbers.isNotEmpty()) Text(numbers.joinToString(" · "), color = Color.White.copy(alpha = 0.8f), fontSize = if (big) 15.sp else 12.sp, fontWeight = FontWeight.Medium)
+            Text(name, color = Color(0xFFF7F0E3), fontFamily = Serif, fontWeight = FontWeight.SemiBold, fontSize = if (big) 28.sp else 18.sp, maxLines = 3, lineHeight = if (big) 32.sp else 22.sp)
+            if (numbers.isNotEmpty()) Text(numbers.joinToString(" · "), color = Color(0xFFF7F0E3).copy(alpha = 0.7f), fontSize = if (big) 15.sp else 12.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -149,11 +150,12 @@ fun SwipeRow(
 fun Chip(text: String, selected: Boolean = false, icon: ImageVector? = null, onClick: () -> Unit) {
     val c = LocalIos.current
     Row(
-        Modifier.bounceClick(onClick).clip(RoundedCornerShape(50)).background(if (selected) c.accent else c.card).padding(horizontal = 14.dp, vertical = 8.dp),
+        Modifier.bounceClick(onClick).clip(RoundedCornerShape(50)).background(if (selected) c.accent else Color.Transparent)
+            .border(1.dp, if (selected) c.accent else c.separator, RoundedCornerShape(50)).padding(horizontal = 13.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (icon != null) { Icon(icon, null, tint = if (selected) Color.White else c.accent, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(5.dp)) }
-        Text(text, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = if (selected) Color.White else c.label)
+        Text(text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = if (selected) (if (c.dark) c.bg else Color.White) else c.secondary)
     }
 }
 

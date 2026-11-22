@@ -11,11 +11,11 @@ import com.g41us.faithhymn.data.Hymn
 data class CardStyle(val name: String, val colors: IntArray, val text: Int, val sub: Int, val serif: Boolean = true)
 
 val CardStyles = listOf(
-    CardStyle("Classic", intArrayOf(0xFF8E6CFF.toInt(), 0xFF3A2BC0.toInt()), Color.WHITE, 0xCCFFFFFF.toInt()),
-    CardStyle("Sunrise", intArrayOf(0xFFFFB36B.toInt(), 0xFFE0406A.toInt()), Color.WHITE, 0xD9FFFFFF.toInt()),
+    CardStyle("Hymnal", intArrayOf(0xFF7A2630.toInt(), 0xFF5E1A22.toInt()), 0xFFF7F0E3.toInt(), 0xB3F7F0E3.toInt()),
+    CardStyle("Forest", intArrayOf(0xFF2E5B45.toInt(), 0xFF22463A.toInt()), 0xFFF7F0E3.toInt(), 0xB3F7F0E3.toInt()),
     CardStyle("Paper", intArrayOf(0xFFFBF6EC.toInt(), 0xFFEFE3CC.toInt()), 0xFF3B2F22.toInt(), 0xAA3B2F22.toInt()),
     CardStyle("Night", intArrayOf(0xFF1E1812.toInt(), 0xFF0C0906.toInt()), 0xFFF1DFC2.toInt(), 0x99F1DFC2.toInt()),
-    CardStyle("Ocean", intArrayOf(0xFF43C6AC.toInt(), 0xFF145E7A.toInt()), Color.WHITE, 0xCCFFFFFF.toInt()),
+    CardStyle("Navy", intArrayOf(0xFF244A75.toInt(), 0xFF1A3657.toInt()), 0xFFF7F0E3.toInt(), 0xB3F7F0E3.toInt()),
     CardStyle("Modern", intArrayOf(0xFFFFFFFF.toInt(), 0xFFF2F2F7.toInt()), 0xFF111111.toInt(), 0x99111111.toInt(), serif = false),
 )
 

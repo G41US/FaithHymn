@@ -20,38 +20,38 @@ data class IosColors(
     val bar: Color = card,
 )
 
-/** Accent choices (Settings → Accent colour). */
+/** Accent choices (Settings → Accent colour): (light, dark). Muted, ink-like tones from printed hymnals. */
 val Accents = listOf(
-    "Indigo" to (Color(0xFF5856D6) to Color(0xFF7D7AFF)),
-    "Blue" to (Color(0xFF007AFF) to Color(0xFF0A84FF)),
-    "Teal" to (Color(0xFF0F9DA8) to Color(0xFF40C8E0)),
-    "Green" to (Color(0xFF248A3D) to Color(0xFF30D158)),
-    "Gold" to (Color(0xFFB8860B) to Color(0xFFE5B64A)),
-    "Orange" to (Color(0xFFE5701A) to Color(0xFFFF9F0A)),
-    "Rose" to (Color(0xFFD12A5B) to Color(0xFFFF375F)),
-    "Purple" to (Color(0xFF9B30D9) to Color(0xFFBF5AF2)),
+    "Oxblood" to (Color(0xFF8A2A35) to Color(0xFFD6AE6B)),
+    "Forest" to (Color(0xFF2E5B45) to Color(0xFF93C6A8)),
+    "Navy" to (Color(0xFF244A75) to Color(0xFF9BBCE6)),
+    "Ochre" to (Color(0xFF946318) to Color(0xFFE2B66C)),
+    "Plum" to (Color(0xFF5C3560) to Color(0xFFCCA2CF)),
+    "Ink" to (Color(0xFF2A2724) to Color(0xFFE8E2D8)),
 )
 
+/** Warm paper and ink. */
 private val LightBase = IosColors(
-    bg = Color(0xFFF2F2F7), card = Color.White, label = Color(0xFF000000), secondary = Color(0x993C3C43),
-    tertiary = Color(0x4D3C3C43), separator = Color(0x4A3C3C43), accent = Color(0xFF5856D6),
-    fill = Color(0x1F787880), red = Color(0xFFFF3B30), dark = false, bar = Color(0xCCF9F9F9),
+    bg = Color(0xFFF5F1E9), card = Color(0xFFFFFDF8), label = Color(0xFF1E1B17), secondary = Color(0x991E1B17),
+    tertiary = Color(0x4D1E1B17), separator = Color(0x1F1E1B17), accent = Color(0xFF8A2A35),
+    fill = Color(0x121E1B17), red = Color(0xFFB3261E), dark = false, bar = Color(0xE6F5F1E9),
 )
+/** Warm charcoal, never blue-black. */
 private val DarkBase = IosColors(
-    bg = Color(0xFF000000), card = Color(0xFF1C1C1E), label = Color.White, secondary = Color(0x99EBEBF5),
-    tertiary = Color(0x4DEBEBF5), separator = Color(0xA6545458), accent = Color(0xFF7D7AFF),
-    fill = Color(0x3D787880), red = Color(0xFFFF453A), dark = true, bar = Color(0xB31C1C1E),
+    bg = Color(0xFF131211), card = Color(0xFF1D1B19), label = Color(0xFFF1ECE3), secondary = Color(0x99F1ECE3),
+    tertiary = Color(0x4DF1ECE3), separator = Color(0x26F1ECE3), accent = Color(0xFFD6AE6B),
+    fill = Color(0x1AF1ECE3), red = Color(0xFFFF8A80), dark = true, bar = Color(0xE6131211),
 )
-/** Warm, low-glare dark for evening services: sepia text on brown-black. */
+/** Sepia for evening services: candle-lit text on brown-black. */
 private val NightBase = IosColors(
-    bg = Color(0xFF120E0A), card = Color(0xFF1E1812), label = Color(0xFFF1DFC2), secondary = Color(0x99F1DFC2),
-    tertiary = Color(0x55F1DFC2), separator = Color(0x553A2E22), accent = Color(0xFFE0A45A),
-    fill = Color(0x33A08060), red = Color(0xFFFF6B4A), dark = true, night = true, bar = Color(0xB31E1812),
+    bg = Color(0xFF120E0A), card = Color(0xFF1C1712), label = Color(0xFFF0DFC3), secondary = Color(0x99F0DFC3),
+    tertiary = Color(0x55F0DFC3), separator = Color(0x333A2E22), accent = Color(0xFFD9A75E),
+    fill = Color(0x26A08060), red = Color(0xFFFF8A65), dark = true, night = true, bar = Color(0xE6120E0A),
 )
 
 /** Colours for choir parts: Soprano, Alto, Tenor, Bass. */
 fun voiceColor(v: Voice): Color = when (v) {
-    Voice.S -> Color(0xFFFF2D55); Voice.A -> Color(0xFFFF9500); Voice.T -> Color(0xFF34C759); Voice.B -> Color(0xFF007AFF)
+    Voice.S -> Color(0xFFB54A5E); Voice.A -> Color(0xFFB07C2C); Voice.T -> Color(0xFF4E7D5B); Voice.B -> Color(0xFF41658F)
 }
 
 val LocalIos = staticCompositionLocalOf { LightBase }

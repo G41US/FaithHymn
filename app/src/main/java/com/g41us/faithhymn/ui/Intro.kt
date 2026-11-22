@@ -23,7 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private val Gold = Color(0xFFF3C969)
-private val Ink = Color(0xFF120B3D)
+private val Ink = Color(0xFF140A0C)
 
 /**
  * Startup: a hymn book opens, gold light sweeps across its pages, the name writes itself in,
@@ -58,7 +58,7 @@ fun AnimatedIntro(done: () -> Unit) {
     Box(
         Modifier.fillMaxSize()
             .graphicsLayer { alpha = 1f - e }
-            .background(Brush.radialGradient(listOf(Color(0xFF4B36D6), Color(0xFF241873), Ink), radius = 1400f)),
+            .background(Brush.radialGradient(listOf(Color(0xFF5A1C25), Color(0xFF2C0F14), Ink), radius = 1400f)),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.graphicsLayer {
@@ -99,7 +99,7 @@ private fun DrawScope.drawBook(p: Float) {
     val w = size.width; val h = size.height; val cx = w / 2
     val pageW = w / 2 - 6f
     val tilt = 1f - p                       // pages fold toward the spine while closed
-    val cover = Color(0xFF2A1C8F)
+    val cover = Color(0xFF6E1F2A)
     // cover behind the pages
     drawRoundRect(cover, Offset(cx - pageW * p - 10f, 8f), Size(pageW * 2 * p + 20f, h - 4f), CornerRadius(18f))
     fun page(left: Boolean) {
@@ -135,7 +135,7 @@ private fun DrawScope.drawBook(p: Float) {
     if (p > 0.7f) {
         val a = ((p - 0.7f) / 0.3f).coerceIn(0f, 1f)
         val nx = cx + pageW * 0.55f; val ny = h * 0.62f
-        val col = Color(0xFF5B47F0).copy(alpha = a)
+        val col = Color(0xFF8A2A35).copy(alpha = a)
         drawOval(col, Offset(nx - 26f, ny - 8f), Size(26f, 20f))
         drawLine(col, Offset(nx - 2f, ny + 2f), Offset(nx - 2f, ny - 52f), strokeWidth = 6f)
         drawLine(col, Offset(nx - 2f, ny - 52f), Offset(nx + 22f, ny - 40f), strokeWidth = 8f, cap = StrokeCap.Round)

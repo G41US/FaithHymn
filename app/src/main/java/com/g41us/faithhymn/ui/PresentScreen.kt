@@ -150,7 +150,7 @@ private fun SlideView(s: Slide?, next: Slide?, settings: AppSettings, bg: Bitmap
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         when (settings.presentTheme) {
             PresentTheme.BLACK -> {}
-            PresentTheme.GRADIENT -> Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(Color(0xFF2B1C6B), Color(0xFF0B0820), Color(0xFF3A1340)))))
+            PresentTheme.GRADIENT -> Box(Modifier.fillMaxSize().background(Brush.radialGradient(listOf(Color(0xFF3A1419), Color(0xFF140A0C)), radius = 2200f)))
             PresentTheme.PHOTO -> if (bg != null) {
                 Image(bg.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
                 Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.55f)))
@@ -197,7 +197,7 @@ private fun RemoteView(cur: Slide?, next: Slide?, i: Int, total: Int, tvName: St
             Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(20.dp)).background(Color.White.copy(alpha = 0.1f)).clickable { go(-1) }, contentAlignment = Alignment.Center) {
                 Icon(Icons.Rounded.ChevronLeft, "Previous", tint = Color.White, modifier = Modifier.size(48.dp))
             }
-            Box(Modifier.weight(2f).fillMaxHeight().clip(RoundedCornerShape(20.dp)).background(Color(0xFF5856D6)).clickable { go(1) }, contentAlignment = Alignment.Center) {
+            Box(Modifier.weight(2f).fillMaxHeight().clip(RoundedCornerShape(20.dp)).background(Color(0xFF8A2A35)).clickable { go(1) }, contentAlignment = Alignment.Center) {
                 Row(verticalAlignment = Alignment.CenterVertically) { Text("Next", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold); Icon(Icons.Rounded.ChevronRight, null, tint = Color.White, modifier = Modifier.size(40.dp)) }
             }
         }
@@ -248,7 +248,7 @@ private fun PresentSettingsSheet(app: FaithHymnApp, s: AppSettings, tvName: Stri
 
 @Composable
 fun iosSwitch() = SwitchDefaults.colors(
-    checkedThumbColor = Color.White, checkedTrackColor = Color(0xFF34C759), checkedBorderColor = Color.Transparent,
+    checkedThumbColor = Color.White, checkedTrackColor = LocalIos.current.accent, checkedBorderColor = Color.Transparent,
     uncheckedThumbColor = Color.White, uncheckedTrackColor = LocalIos.current.fill, uncheckedBorderColor = Color.Transparent,
 )
 

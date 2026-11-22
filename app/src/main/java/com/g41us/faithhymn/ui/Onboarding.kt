@@ -49,8 +49,8 @@ fun Onboarding(done: () -> Unit) {
             Column(Modifier.fillMaxSize().padding(horizontal = 32.dp).graphicsLayer { alpha = 1f - off.coerceIn(0f, 1f) * 0.6f },
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 Box(Modifier.size(200.dp).graphicsLayer { val s = 1f - off * 0.2f; scaleX = s; scaleY = s }
-                    .clip(RoundedCornerShape(48.dp)).background(Brush.linearGradient(p.colors)), contentAlignment = Alignment.Center) {
-                    Icon(p.icon, null, tint = Color.White, modifier = Modifier.size(96.dp))
+                    .clip(RoundedCornerShape(48.dp)).background(c.accent), contentAlignment = Alignment.Center) {
+                    Icon(p.icon, null, tint = if (c.dark) c.bg else Color(0xFFF7F0E3), modifier = Modifier.size(88.dp))
                 }
                 Spacer(Modifier.height(40.dp))
                 Text(p.title, fontSize = 30.sp, fontWeight = FontWeight.Bold, color = c.label, textAlign = TextAlign.Center)

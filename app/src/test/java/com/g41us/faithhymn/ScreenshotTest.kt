@@ -80,5 +80,10 @@ class ScreenshotTest {
         tap("All Hail, Immanuel!"); shot("20_night_reader")
         app.settings.update { it.copy(theme = ThemeMode.LIGHT, presentLeader = true) }
         rule.onNodeWithContentDescription("More").performClick(); tap("Present on screen"); shot("21_present")
+        rule.runOnUiThread { rule.activity.onBackPressedDispatcher.onBackPressed() }
+        rule.runOnUiThread { rule.activity.onBackPressedDispatcher.onBackPressed() }
+        app.settings.update { it.copy(theme = ThemeMode.DARK) }
+        tap("Hymns"); shot("22_dark_home")
+        rule.onAllNodes(hasScrollToIndexAction()).onFirst().performScrollToIndex(6); shot("23_dark_scrolled")
     }
 }

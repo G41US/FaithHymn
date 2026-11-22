@@ -42,9 +42,9 @@ private const val APP_LINK = "https://github.com/G41US/FaithHymn/releases/latest
 
 /** Launcher icon variants: activity-alias name, label, gradient. */
 private val IconVariants = listOf(
-    Triple(".IconClassic", "Classic", listOf(Color(0xFF8E6CFF), Color(0xFF4A3AE0))),
-    Triple(".IconGold", "Gold", listOf(Color(0xFFF6C25B), Color(0xFFC27A12))),
-    Triple(".IconMidnight", "Midnight", listOf(Color(0xFF2C2C3A), Color(0xFF0B0B12))),
+    Triple(".IconClassic", "Oxblood", listOf(Color(0xFF8A2A35), Color(0xFF5E1A22))),
+    Triple(".IconGold", "Gold", listOf(Color(0xFFD9B46A), Color(0xFFA8843F))),
+    Triple(".IconMidnight", "Ink", listOf(Color(0xFF2A2724), Color(0xFF141210))),
 )
 
 fun setLauncherIcon(ctx: Context, variant: Int) {

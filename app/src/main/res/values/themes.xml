@@ -5,7 +5,7 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
     <style name="Theme.FaithHymn.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#241873</item>
+        <item name="windowSplashScreenBackground">#140A0C</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_blank</item>
         <item name="postSplashScreenTheme">@style/Theme.FaithHymn</item>
     </style>

@@ -65,7 +65,7 @@ fun PlayerScreen(app: FaithHymnApp, close: () -> Unit, openHymn: (Int) -> Unit) 
     val blocks = hymn?.parsed.orEmpty()
     val active = if (st.durationMs > 0) blockAt(blocks, st.positionMs.toFloat() / st.durationMs) else 0
 
-    Column(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(grad[0].copy(alpha = 0.35f), c.bg, c.bg))).statusBarsPadding().navigationBarsPadding()) {
+    Column(Modifier.fillMaxSize().background(c.bg).statusBarsPadding().navigationBarsPadding()) {
         Row(Modifier.fillMaxWidth().height(48.dp).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton(close) { Icon(Icons.Rounded.KeyboardArrowDown, "Close", tint = c.label, modifier = Modifier.size(32.dp)) }
             Text(if (st.queueSize > 1) "Playing ${st.queueIndex + 1} of ${st.queueSize}" else "Now playing", Modifier.weight(1f), textAlign = TextAlign.Center,
@@ -87,12 +87,12 @@ fun PlayerScreen(app: FaithHymnApp, close: () -> Unit, openHymn: (Int) -> Unit) 
                     }
                 } else {
                     val scale by animateFloatAsState(if (st.playing) 1f else 0.86f, spring(dampingRatio = 0.6f), label = "art")
-                    Box(Modifier.fillMaxWidth().aspectRatio(1f).scale(scale).shadow(24.dp, RoundedCornerShape(28.dp), spotColor = grad[1])
-                        .clip(RoundedCornerShape(28.dp)).background(Brush.linearGradient(grad)).clickable { showLyrics = true }) {
-                        Icon(Icons.Rounded.MusicNote, null, tint = Color.White.copy(alpha = 0.15f), modifier = Modifier.align(Alignment.BottomEnd).size(200.dp).offset(30.dp, 30.dp))
+                    Box(Modifier.fillMaxWidth().aspectRatio(1f).scale(scale).shadow(16.dp, RoundedCornerShape(24.dp))
+                        .clip(RoundedCornerShape(24.dp)).background(grad[0]).clickable { showLyrics = true }) {
+                        Box(Modifier.align(Alignment.BottomStart).padding(24.dp).width(48.dp).height(3.dp).background(Color(0xFFD9B46A)))
                         Column(Modifier.padding(24.dp)) {
-                            Text("HYMN", color = Color.White.copy(alpha = 0.8f), fontWeight = FontWeight.Bold, letterSpacing = 2.sp, fontSize = 14.sp)
-                            Text("$n", color = Color.White, fontWeight = FontWeight.Black, fontSize = 96.sp, lineHeight = 100.sp)
+                            Text("FAITHHYMNS · NO.", color = Color(0xFFF7F0E3).copy(alpha = 0.7f), fontWeight = FontWeight.Bold, letterSpacing = 2.sp, fontSize = 12.sp)
+                            Text("$n", color = Color(0xFFF7F0E3), fontFamily = Serif, fontWeight = FontWeight.SemiBold, fontSize = 104.sp, lineHeight = 108.sp)
                         }
                         if (n in downloaded) Row(Modifier.align(Alignment.TopEnd).padding(16.dp).clip(RoundedCornerShape(8.dp)).background(Color.Black.copy(alpha = 0.25f)).padding(horizontal = 8.dp, vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically) {

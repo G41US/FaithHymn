@@ -2,6 +2,7 @@ package com.g41us.faithhymn.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -79,7 +80,7 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
                     SectionHeader("Recently opened")
                     LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(recent, key = { it.number }) { h ->
-                            Column(Modifier.width(150.dp).bounceClick { open(h.number) }.clip(RoundedCornerShape(14.dp)).background(c.card).padding(12.dp)) {
+                            Column(Modifier.width(150.dp).bounceClick { open(h.number) }.clip(RoundedCornerShape(14.dp)).background(c.card).border(1.dp, c.separator, RoundedCornerShape(14.dp)).padding(12.dp)) {
                                 Text("${h.number}", color = c.accent, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                                 Text(h.title.titleCase(), color = c.label, fontSize = 14.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.height(38.dp))
                             }
@@ -104,7 +105,7 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
             }
             itemsIndexed(sorted, key = { _, h -> h.number }) { i, h ->
                 val shape = cornerFor(i, sorted.size)
-                Column(Modifier.padding(start = 16.dp, end = 30.dp).clip(shape).background(c.card)) {
+                Column(Modifier.padding(horizontal = 16.dp).clip(shape).background(c.card)) {
                     HymnRow(h, onClick = { open(h.number) }, audio = h.number in available, offline = h.number in downloaded)
                     if (i != sorted.lastIndex) Separator(72)
                 }
@@ -113,7 +114,12 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
         CompactBar("Hymns", collapsed, Modifier.align(Alignment.TopCenter)) {
             CircleButton(Icons.Rounded.Dialpad, { pad = true }, size = 32)
         }
-        if (list.firstVisibleItemIndex >= HEADER_ITEMS - 1) Scrubber(marks, Modifier.align(Alignment.CenterEnd).padding(bottom = LocalBarPadding.current)) { jump(it) }
+        // Index strip only appears while scrolling (keeps the screen calm).
+        var showScrub by remember { mutableStateOf(false) }
+        LaunchedEffect(list.isScrollInProgress) { if (list.isScrollInProgress) showScrub = true else { kotlinx.coroutines.delay(1500); showScrub = false } }
+        androidx.compose.animation.AnimatedVisibility(showScrub && list.firstVisibleItemIndex >= HEADER_ITEMS - 1,
+            Modifier.align(Alignment.CenterEnd).padding(bottom = LocalBarPadding.current),
+            enter = androidx.compose.animation.fadeIn(), exit = androidx.compose.animation.fadeOut()) { Scrubber(marks, Modifier) { jump(it); showScrub = true } }
     }
     if (pad) NumberPad(app.repo.count, onDismiss = { pad = false }, onGo = { pad = false; open(it) })
 }
@@ -135,38 +141,35 @@ private fun Greeting(onPad: () -> Unit) {
     }
 }
 
+/** Hymn of the day: a printed-page card — ivory, ink and one accent, no gradients. */
 @Composable
 private fun TodayCard(app: FaithHymnApp, h: Hymn, available: Set<Int>, open: (Int) -> Unit) {
+    val c = LocalIos.current
     val first = h.parsed.firstOrNull()?.lines?.take(2)?.joinToString("\n") { it.plain.trim() } ?: h.firstLine
-    Box(
-        Modifier.padding(horizontal = 16.dp, vertical = 6.dp).fillMaxWidth().shadow(12.dp, RoundedCornerShape(22.dp), spotColor = Color(0xFF4A3AE0))
-            .clip(RoundedCornerShape(22.dp)).background(Brush.linearGradient(CoverGradients[0])).padding(0.dp).bounceClick { open(h.number) }.padding(20.dp)
+    Column(
+        Modifier.padding(horizontal = 16.dp, vertical = 6.dp).fillMaxWidth().bounceClick { open(h.number) }
+            .clip(RoundedCornerShape(18.dp)).background(c.card).border(1.dp, c.separator, RoundedCornerShape(18.dp)).padding(20.dp)
     ) {
-        Text("${h.number}", fontSize = 110.sp, fontWeight = FontWeight.Black, color = Color.White.copy(alpha = 0.10f),
-            modifier = Modifier.align(Alignment.TopEnd).offset(x = 12.dp, y = (-30).dp))
-        Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Rounded.WbSunny, null, tint = Color.White.copy(alpha = 0.85f), modifier = Modifier.size(15.dp))
-                Text("  HYMN OF THE DAY · ${h.number}", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White.copy(alpha = 0.85f), letterSpacing = 0.8.sp)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("HYMN OF THE DAY", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = c.accent, letterSpacing = 1.4.sp, modifier = Modifier.weight(1f))
+            Text("No. ${h.number}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = c.secondary)
+        }
+        Spacer(Modifier.height(10.dp))
+        Text(h.title.titleCase(), fontSize = 24.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.4).sp, color = c.label, lineHeight = 28.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        Spacer(Modifier.height(8.dp))
+        Text(com.g41us.faithhymn.data.HymnFormat.softenFirstWord(first), fontSize = 17.sp, color = c.secondary, lineHeight = 24.sp,
+            fontFamily = Serif, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic, maxLines = 2, overflow = TextOverflow.Ellipsis)
+        Spacer(Modifier.height(16.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(Modifier.bounceClick { open(h.number) }.clip(RoundedCornerShape(12.dp)).background(c.accent).padding(horizontal = 18.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                Text("Read", color = if (c.dark) c.bg else Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
             }
-            Spacer(Modifier.height(10.dp))
-            Text(h.title.titleCase(), fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Color.White, lineHeight = 30.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            Spacer(Modifier.height(8.dp))
-            Text(com.g41us.faithhymn.data.HymnFormat.softenFirstWord(first), fontSize = 16.sp, color = Color.White.copy(alpha = 0.88f), lineHeight = 22.sp,
-                fontFamily = Serif, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            Spacer(Modifier.height(16.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Row(Modifier.clip(RoundedCornerShape(12.dp)).background(Color.White).clickable { open(h.number) }.padding(horizontal = 18.dp, vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Rounded.MenuBook, null, tint = Color(0xFF4A3AE0), modifier = Modifier.size(18.dp))
-                    Text("  Read", color = Color(0xFF4A3AE0), fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
-                }
-                Row(Modifier.clip(RoundedCornerShape(12.dp)).background(Color.White.copy(alpha = 0.22f))
-                    .clickable { app.player.play(listOf(HymnSummary(h.number, h.title, h.firstLine))) }.padding(horizontal = 18.dp, vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Rounded.PlayArrow, null, tint = Color.White, modifier = Modifier.size(18.dp))
-                    Text(if (h.number in available) "  Play" else "  Listen", color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
-                }
+            Row(Modifier.bounceClick { app.player.play(listOf(HymnSummary(h.number, h.title, h.firstLine))) }
+                .clip(RoundedCornerShape(12.dp)).border(1.dp, c.separator, RoundedCornerShape(12.dp)).padding(horizontal = 16.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Rounded.PlayArrow, null, tint = c.label, modifier = Modifier.size(18.dp))
+                Text(" Listen", color = c.label, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
             }
         }
     }
