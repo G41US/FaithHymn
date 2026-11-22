@@ -93,8 +93,10 @@ fun HymnLyrics(
                         }
                     }
                     if (!chorus && showMarkings && b.tempo != null) Row(Modifier.padding(bottom = 4.dp)) { MarkChip(b.tempo, italic = true) }
+                    // Call-and-response blocks (part changes line to line) keep labels inline; single-part passages get a label line.
+                    val inlineLabels = b.lines.count { it.showPart } > 1
                     b.lines.forEachIndexed { li, line ->
-                        LyricLine(line, i == 0 && li == 0, fontSize, family, myPart, showMarkings, onDynamic)
+                        LyricLine(line, i == 0 && li == 0, fontSize, family, myPart, showMarkings, onDynamic, inlineLabels)
                     }
                 }
             }
@@ -111,31 +113,30 @@ private fun MarkChip(text: String, italic: Boolean = false) {
 }
 
 @Composable
-private fun LyricLine(line: HymnLine, first: Boolean, fontSize: Float, family: FontFamily, myPart: Voice?, showMarkings: Boolean, onDynamic: (String) -> Unit) {
+private fun LyricLine(line: HymnLine, first: Boolean, fontSize: Float, family: FontFamily, myPart: Voice?, showMarkings: Boolean, onDynamic: (String) -> Unit, inlineLabels: Boolean = false) {
     val c = LocalIos.current
     val mine = myPart == null || line.part == null || myPart in line.part.voices
-    Row(Modifier.alpha(if (mine) 1f else 0.35f).padding(vertical = 1.dp), verticalAlignment = Alignment.Top) {
-        if (showMarkings && (line.showPart && line.part != null || line.dynamic != null)) Row(Modifier.padding(top = (fontSize * 0.18f).dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.alpha(if (mine) 1f else 0.35f).height(IntrinsicSize.Min), verticalAlignment = Alignment.Top) {
+        // Colour rule down the side: who sings this line (one stripe per voice).
+        val voices = line.part?.takeIf { showMarkings && !it.everyone }?.voices?.sortedBy { it.ordinal }.orEmpty()
+        if (voices.isNotEmpty()) Row(Modifier.fillMaxHeight().padding(end = 8.dp)) {
+            voices.forEach { v -> Box(Modifier.padding(end = 1.5.dp).width(3.dp).fillMaxHeight().clip(RoundedCornerShape(2.dp)).background(voiceColor(v))) }
+        }
+        val hasMark = showMarkings && (line.showPart && line.part != null || line.dynamic != null)
+        if (inlineLabels) Row(Modifier.padding(vertical = 1.dp), verticalAlignment = Alignment.Top) {
+            if (hasMark) Row(Modifier.padding(top = (fontSize * 0.18f).dp), verticalAlignment = Alignment.CenterVertically) {
+                if (line.showPart && line.part != null) PartPill(line.part)
+                line.dynamic?.let { DynamicBadge(it) { onDynamic(it) } }
+            }
+            LyricText(line, first, fontSize, family, onDynamic, showMarkings)
+        } else Column(Modifier.padding(vertical = 1.dp)) {
+        // Direction (who sings / how) on its own small line above the passage, so lyrics never get squeezed.
+        if (hasMark) Row(Modifier.padding(top = 4.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
             if (line.showPart && line.part != null) PartPill(line.part)
             line.dynamic?.let { DynamicBadge(it) { onDynamic(it) } }
         }
-        Text(
-            buildAnnotatedString {
-                line.segments.forEachIndexed { si, s ->
-                    when {
-                        s.dynamic != null -> if (showMarkings) withStyle(SpanStyle(color = c.accent, fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, fontFamily = Serif, fontSize = (fontSize * 0.8f).sp)) { append(" ${s.dynamic} ") }
-                        s.echo -> withStyle(SpanStyle(color = c.secondary, fontStyle = FontStyle.Italic)) { append(s.text) }
-                        first && si == 0 -> {
-                            val t = HymnFormat.softenFirstWord(s.text.trimStart())
-                            withStyle(SpanStyle(fontSize = (fontSize * 1.55f).sp, fontWeight = FontWeight.Bold, color = c.accent)) { append(t.take(1)) }
-                            append(t.drop(1))
-                        }
-                        else -> append(s.text)
-                    }
-                }
-            },
-            fontSize = fontSize.sp, lineHeight = (fontSize * 1.45f).sp, color = c.label, fontFamily = family,
-        )
+        LyricText(line, first, fontSize, family, onDynamic, showMarkings)
+        }
     }
 }
 
@@ -165,4 +166,26 @@ fun MarkingsKey() {
         Text("Other marks", fontWeight = FontWeight.SemiBold, color = c.label, fontSize = 15.sp)
         Text("(words in brackets) — echo / answering part\nrepeat — go back to the repeat sign\n12 / 8 — time signature of the chorus", color = c.secondary, fontSize = 14.sp, lineHeight = 21.sp, modifier = Modifier.padding(top = 4.dp))
     }
+}
+
+@Composable
+private fun LyricText(line: HymnLine, first: Boolean, fontSize: Float, family: FontFamily, onDynamic: (String) -> Unit, showMarkings: Boolean) {
+    val c = LocalIos.current
+        Text(
+            buildAnnotatedString {
+                line.segments.forEachIndexed { si, s ->
+                    when {
+                        s.dynamic != null -> if (showMarkings) withStyle(SpanStyle(color = c.accent, fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, fontFamily = Serif, fontSize = (fontSize * 0.8f).sp)) { append(" ${s.dynamic} ") }
+                        s.echo -> withStyle(SpanStyle(color = c.secondary, fontStyle = FontStyle.Italic)) { append(s.text) }
+                        first && si == 0 -> {
+                            val t = HymnFormat.softenFirstWord(s.text.trimStart())
+                            withStyle(SpanStyle(fontSize = (fontSize * 1.55f).sp, fontWeight = FontWeight.Bold, color = c.accent)) { append(t.take(1)) }
+                            append(t.drop(1))
+                        }
+                        else -> append(s.text)
+                    }
+                }
+            },
+            fontSize = fontSize.sp, lineHeight = (fontSize * 1.45f).sp, color = c.label, fontFamily = family,
+        )
 }

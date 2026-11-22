@@ -145,6 +145,7 @@ fun SettingsScreen(app: FaithHymnApp) {
             }
         }
 
+        if (available.isNotEmpty() || downloaded.isNotEmpty()) {
         SectionHeader("Offline audio")
         Group {
             ListRow("Saved recordings", icon = { IconTile(Icons.Rounded.DownloadDone, c.accent) }, value = "${downloaded.size} · ${"%.1f".format(mb)} MB")
@@ -161,6 +162,8 @@ fun SettingsScreen(app: FaithHymnApp) {
                 Separator(59)
                 ListRow("Remove all downloads", titleColor = c.red, icon = { IconTile(Icons.Rounded.Delete, c.red) }, onClick = { confirm = true })
             }
+        }
+
         }
 
         SectionHeader("App updates")

@@ -31,7 +31,7 @@ private data class Intro(val icon: ImageVector, val title: String, val body: Str
 private val pages = listOf(
     Intro(Icons.Rounded.Search, "Find any hymn", "Search all 1,001 hymns by number, title, or any line you remember — even with a typo.", CoverGradients[0]),
     Intro(Icons.Rounded.Slideshow, "Present to the church", "Show one verse at a time in big text on a projector or TV, straight from your phone.", CoverGradients[1]),
-    Intro(Icons.Rounded.Headphones, "Listen offline", "Play recordings with lock-screen controls and save them for when there's no data.", CoverGradients[2]),
+    Intro(Icons.Rounded.RecordVoiceOver, "Sing your part", "Soprano, Alto, Tenor and Bass lines are marked in colour. Pick your part and the rest fade back.", CoverGradients[2]),
 )
 
 @Composable

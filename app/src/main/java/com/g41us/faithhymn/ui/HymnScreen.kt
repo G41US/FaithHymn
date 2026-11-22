@@ -125,7 +125,12 @@ fun HymnScreen(app: FaithHymnApp, start: Int, playlistId: Long?, back: () -> Uni
             HymnPage(app, ord[page], settings.fontSize, settings.serif, settings.myPart, settings.showMarkings,
                 onCollapsed = { collapsedPages[ord[page]] = it }, onShareBlock = { shareBlock = it }, onKey = { showKey = true })
         }
-        AudioBar(app, current, hymn, ord, playlistId != null, openPlayer)
+        // Listening controls only when this hymn actually has a recording.
+        val available by app.catalog.available.collectAsStateWithLifecycle()
+        val saved by app.audio.downloaded.collectAsStateWithLifecycle()
+        val playing by app.player.state.collectAsStateWithLifecycle()
+        if (current in available || current in saved || playing.number == current) AudioBar(app, current, hymn, ord, playlistId != null, openPlayer)
+        else Spacer(Modifier.navigationBarsPadding())
     }
 
     if (addTo) AddToPlaylist(app, current) { addTo = false }

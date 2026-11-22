@@ -172,7 +172,7 @@ private fun TodayCard(app: FaithHymnApp, h: Hymn, available: Set<Int>, open: (In
                 verticalAlignment = Alignment.CenterVertically) {
                 Text("Read", color = if (c.dark) c.bg else Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
             }
-            Row(Modifier.bounceClick { app.player.play(listOf(HymnSummary(h.number, h.title, h.firstLine))) }
+            if (h.number in available) Row(Modifier.bounceClick { app.player.play(listOf(HymnSummary(h.number, h.title, h.firstLine))) }
                 .clip(RoundedCornerShape(12.dp)).border(1.dp, c.separator, RoundedCornerShape(12.dp)).padding(horizontal = 16.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Rounded.PlayArrow, null, tint = c.label, modifier = Modifier.size(18.dp))

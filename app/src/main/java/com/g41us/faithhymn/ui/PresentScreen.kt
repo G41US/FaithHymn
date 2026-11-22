@@ -232,9 +232,9 @@ private fun PresentSettingsSheet(app: FaithHymnApp, s: AppSettings, tvName: Stri
             Group {
                 ListRow("Leader view", subtitle = "Show the next verse at the bottom", icon = { IconTile(Icons.Rounded.Visibility, Color(0xFF34C759)) },
                     trailing = { Switch(s.presentLeader, { v -> app.settings.update { it.copy(presentLeader = v) } }, colors = iosSwitch()) })
-                Separator(59)
+                if (app.catalog.available.value.isNotEmpty()) { Separator(59)
                 ListRow("Follow the recording", subtitle = "Plays the audio and moves verses along", icon = { IconTile(Icons.Rounded.Headphones, c.accent) },
-                    trailing = { Switch(s.presentAuto, { v -> app.settings.update { it.copy(presentAuto = v) } }, colors = iosSwitch()) })
+                    trailing = { Switch(s.presentAuto, { v -> app.settings.update { it.copy(presentAuto = v) } }, colors = iosSwitch()) }) }
             }
             SectionHeader("TV")
             Group {

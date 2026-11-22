@@ -143,6 +143,14 @@ class HymnPlayer(private val ctx: Context, private val audio: AudioStore) {
     fun cancelSleep() { sleepJob?.cancel(); sleepJob = null; _state.value = _state.value.copy(sleepEndsAt = null, sleepEndOfHymn = false) }
 }
 
-fun String.titleCase(): String = lowercase().split(" ").joinToString(" ") { w ->
-    w.replaceFirstChar { it.titlecase() }
+private val smallWords = setOf("a", "an", "and", "as", "at", "but", "by", "for", "from", "in", "into", "nor", "of", "on", "or", "the", "to", "with", "unto", "upon")
+
+/** Hymnal title case: "PRAISE MY SOUL THE KING" -> "Praise My Soul the King"; small words stay lower-case (not first/last). */
+fun String.titleCase(): String {
+    val words = trim().lowercase().split(Regex("\\s+"))
+    return words.mapIndexed { i, w ->
+        val bare = w.trim('“', '"', '\'', '(', ')', ',', ';', ':', '!', '?', '.')
+        if (i != 0 && i != words.lastIndex && bare in smallWords) w
+        else { val lead = w.takeWhile { it in "“\"'(" }; lead + w.drop(lead.length).replaceFirstChar { it.uppercase() } }
+    }.joinToString(" ").replace(Regex("\\bo\\b"), "O")
 }

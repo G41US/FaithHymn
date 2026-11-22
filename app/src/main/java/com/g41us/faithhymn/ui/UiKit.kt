@@ -81,8 +81,10 @@ fun PartPill(part: Part, dim: Boolean = false) {
         if (!part.everyone) part.voices.sortedBy { it.ordinal }.forEach { v ->
             Box(Modifier.padding(end = 2.dp).size(6.dp).clip(CircleShape).background(voiceColor(v)))
         }
-        Text(part.label.trimEnd(':'), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = if (part.everyone) c.secondary else colors.first().copy(alpha = if (dim) 0.5f else 1f),
-            modifier = Modifier.padding(start = 2.dp))
+        Text(if (part.everyone) part.label.trimEnd(':').uppercase() else part.label.trimEnd(':'), fontSize = if (part.everyone) 11.sp else 12.sp,
+            letterSpacing = if (part.everyone) 1.sp else 0.sp, fontWeight = FontWeight.SemiBold,
+            color = if (part.everyone) c.secondary else colors.first().copy(alpha = if (dim) 0.5f else 1f),
+            modifier = Modifier.padding(start = if (part.everyone) 0.dp else 2.dp))
     }
 }
 
