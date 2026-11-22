@@ -64,6 +64,24 @@ class AudioStore(ctx: Context) {
         }
     }
 
+    /** Download every hymn in [numbers] that isn't saved yet. Returns how many were saved. */
+    private val _bulk = MutableStateFlow<Pair<Int, Int>?>(null)  // done / total
+    val bulk: StateFlow<Pair<Int, Int>?> = _bulk
+    @Volatile private var cancelBulk = false
+    suspend fun downloadAll(numbers: Collection<Int>): Int {
+        val todo = numbers.filter { !isDownloaded(it) }.sorted()
+        cancelBulk = false; var ok = 0
+        _bulk.value = 0 to todo.size
+        for ((i, n) in todo.withIndex()) {
+            if (cancelBulk) break
+            if (download(n) == Result.Ok) ok++
+            _bulk.value = (i + 1) to todo.size
+        }
+        _bulk.value = null
+        return ok
+    }
+    fun cancelDownloadAll() { cancelBulk = true }
+
     fun delete(n: Int) { file(n).delete(); _downloaded.value = _downloaded.value - n }
     fun deleteAll() { dir.listFiles()?.forEach { it.delete() }; _downloaded.value = emptySet() }
 }

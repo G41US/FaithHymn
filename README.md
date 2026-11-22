@@ -3,12 +3,15 @@
 The church hymn book app, rebuilt in Kotlin + Jetpack Compose.
 
 - 1,001 hymns stored on the phone (works fully offline)
-- Search by number, title or **any words from the lyrics**
-- Swipe between hymns, pinch to resize text, dark mode
-- Favourites, recent, and playlists (e.g. "Sunday Service") with play-all
-- **Present mode**: one verse at a time in big text for a projector / TV / choir
-- Share a verse as an image or as text
-- Audio with lock-screen controls; download hymns for offline listening
+- Music markings kept and explained: coloured voice-part pills (Sop, ATB, S/A…), dynamics (p, mf, ff, rit.),
+  echo lines, chorus repeat signs and time signatures, verse numbers, and a "Key" sheet. Pick your part to dim the others.
+- Search by number, title or lyrics, with filters, grouped results, voice search, history and typo tolerance
+- Home: greeting, hymn of the day (Read / Play), 1–100 jump chips, A–Z / number scrubber, audio badges
+- Reader: collapsing header, chorus cards, verses highlight and scroll along with the recording, long-press a verse to share it as an image
+- Library: favourites (grid or list), playlists with gradient covers, service planner (date + slots), drag to reorder, swipe actions, share by link or QR
+- Player: full screen with lyrics, repeat, tempo and key change for choir practice, sleep timer, download all
+- Present mode: black / gradient / photo backgrounds, leader view, TV output (phone becomes the remote), follow the recording
+- Settings: Auto / Light / Dark / warm Night theme, accent colours, app icon choices, in-app updates, share-the-app QR
 
 ## Audio files
 The app plays `https://github.com/G41US/FaithHymn/releases/download/audio/<number>.mp3`.

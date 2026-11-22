@@ -54,6 +54,7 @@ android {
 
 dependencies {
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.xerial:sqlite-jdbc:3.47.1.0")
     testImplementation("org.robolectric:robolectric:4.14.1")
     testImplementation("io.github.takahirom.roborazzi:roborazzi:1.40.1")
     testImplementation("io.github.takahirom.roborazzi:roborazzi-compose:1.40.1")
@@ -75,4 +76,8 @@ dependencies {
     implementation("com.google.guava:guava:33.3.1-android")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.9.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("dev.chrisbanes.haze:haze:1.1.1")
+    implementation("sh.calvin.reorderable:reorderable:2.4.3")
+    implementation("com.google.zxing:core:3.5.3")
 }

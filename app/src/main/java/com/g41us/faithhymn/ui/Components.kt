@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
+import androidx.compose.material.icons.rounded.DownloadDone
+import androidx.compose.material.icons.rounded.Headphones
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -85,7 +87,7 @@ fun ListRow(
 
 /** List row for a hymn: number badge, title, first line or search snippet. */
 @Composable
-fun HymnRow(h: HymnSummary, onClick: () -> Unit, trailing: (@Composable () -> Unit)? = null) {
+fun HymnRow(h: HymnSummary, onClick: () -> Unit, audio: Boolean = false, offline: Boolean = false, trailing: (@Composable () -> Unit)? = null) {
     val c = LocalIos.current
     androidx.compose.foundation.layout.Row(
         Modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = 16.dp, vertical = 10.dp),
@@ -96,7 +98,11 @@ fun HymnRow(h: HymnSummary, onClick: () -> Unit, trailing: (@Composable () -> Un
         }
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
-            Text(h.title.titleCase(), fontSize = 17.sp, fontWeight = FontWeight.Medium, color = c.label, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            androidx.compose.foundation.layout.Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(h.title.titleCase(), fontSize = 17.sp, fontWeight = FontWeight.Medium, color = c.label, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                if (offline) Icon(androidx.compose.material.icons.Icons.Rounded.DownloadDone, "Saved offline", tint = c.accent, modifier = Modifier.padding(start = 6.dp).size(15.dp))
+                else if (audio) Icon(androidx.compose.material.icons.Icons.Rounded.Headphones, "Has recording", tint = c.accent, modifier = Modifier.padding(start = 6.dp).size(15.dp))
+            }
             val sub = h.snippet?.replace('\n', ' ')
             if (sub != null) Text(highlight(sub, c.accent), fontSize = 14.sp, color = c.secondary, maxLines = 2, overflow = TextOverflow.Ellipsis)
             else Text(h.firstLine, fontSize = 14.sp, color = c.secondary, maxLines = 1, overflow = TextOverflow.Ellipsis)

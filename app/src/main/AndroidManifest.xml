@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <queries>
+        <intent><action android:name="android.speech.action.RECOGNIZE_SPEECH" /></intent>
+    </queries>
+
     <application
         android:name=".FaithHymnApp"
         android:allowBackup="true"
@@ -19,13 +23,41 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
+            android:theme="@style/Theme.FaithHymn.Splash"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
+            <!-- Shared playlists: faithhymns://playlist?... (QR codes / links) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="faithhymns" android:host="playlist" />
+            </intent-filter>
+        </activity>
+
+        <!-- App icon variants (Settings → App icon). Exactly one is enabled. -->
+        <activity-alias android:name=".IconClassic" android:targetActivity=".MainActivity" android:exported="true"
+            android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
+        <activity-alias android:name=".IconGold" android:targetActivity=".MainActivity" android:exported="true"
+            android:icon="@mipmap/ic_launcher_gold" android:roundIcon="@mipmap/ic_launcher_gold" android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".IconMidnight" android:targetActivity=".MainActivity" android:exported="true"
+            android:icon="@mipmap/ic_launcher_midnight" android:roundIcon="@mipmap/ic_launcher_midnight" android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
         <service
             android:name=".audio.PlaybackService"
             android:exported="true"

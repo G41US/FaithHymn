@@ -13,4 +13,5 @@ class FaithHymnApp : Application() {
     val audio by lazy { AudioStore(this) }
     val player by lazy { HymnPlayer(this, audio) }
     val updater by lazy { Updater(this) }
+    val catalog by lazy { com.g41us.faithhymn.audio.AudioCatalog(this) }
 }
