@@ -10,14 +10,16 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.g41us.faithhymn"
+        applicationId = "com.g41us.faithhymns"
         minSdk = 23
         targetSdk = 35
         versionCode = (project.findProperty("versionCode") as String?)?.toInt() ?: 1
-        versionName = "3.0.0"
+        versionName = (project.findProperty("versionName") as String?) ?: "3.0.0"
         // Audio files: <AUDIO_BASE_URL><hymn number>.mp3  (e.g. 1.mp3, 245.mp3)
         buildConfigField("String", "AUDIO_BASE_URL",
             "\"https://github.com/G41US/FaithHymn/releases/download/audio/\"")
+        // In-app updates: newest GitHub release whose tag starts with "v" (e.g. v3.0.12 → versionCode 12).
+        buildConfigField("String", "UPDATE_REPO", "\"G41US/FaithHymn\"")
     }
 
     // Release signing comes from env vars (GitHub secrets). Falls back to debug key.

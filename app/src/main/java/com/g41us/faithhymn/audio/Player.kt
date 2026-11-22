@@ -75,7 +75,7 @@ class HymnPlayer(private val ctx: Context, private val audio: AudioStore) {
     private fun item(h: HymnSummary) = MediaItem.Builder()
         .setMediaId(h.number.toString())
         .setUri(audio.uri(h.number))
-        .setMediaMetadata(MediaMetadata.Builder().setTitle("${h.number}. ${h.title.titleCase()}").setArtist("FaithHymn").build())
+        .setMediaMetadata(MediaMetadata.Builder().setTitle("${h.number}. ${h.title.titleCase()}").setArtist("FaithHymns").build())
         .build()
 
     /** Plays a single hymn, or a queue (playlist) starting at [start]. */

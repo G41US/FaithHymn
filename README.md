@@ -1,4 +1,4 @@
-# FaithHymn 3
+# FaithHymns 3
 
 The church hymn book app, rebuilt in Kotlin + Jetpack Compose.
 
@@ -18,7 +18,7 @@ Change the location in `app/build.gradle.kts` → `AUDIO_BASE_URL`.
 
 ## Building
 GitHub Actions builds an APK on every push (Actions → latest run → *FaithHymn-apk*).
-Push a tag like `v3.0.0` to also publish it as a GitHub release.
+When the signing secrets are set, every push to `main` is also published as release `v3.0.<run>`; the app's Settings → Check for updates installs it.
 
 Signing: add these repo secrets so every build installs as an update over the last one:
 `KEYSTORE_BASE64`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` (= `faithhymn`), `KEY_PASSWORD`.

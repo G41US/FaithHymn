@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.onRoot
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
@@ -51,6 +52,7 @@ class ScreenshotTest {
 
         rule.onAllNodesWithText("Library").onFirst().performClick(); shot("4_library")
         rule.onAllNodesWithText("Settings").onFirst().performClick(); shot("5_settings")
+        rule.onNodeWithText("Hymns in the book").performScrollTo(); shot("5b_settings_updates")
         rule.onAllNodesWithText("Hymns").onFirst().performClick(); shot("6_hymns_recent")
     }
 }

@@ -239,6 +239,6 @@ fun PlaylistPicker(app: FaithHymnApp, onDismiss: () -> Unit, onPick: (Playlist) 
 }
 
 fun shareText(ctx: android.content.Context, h: Hymn) {
-    val text = "Hymn ${h.number}: ${h.title.titleCase()}\n\n${h.content}\n\n— FaithHymn"
+    val text = "Hymn ${h.number}: ${h.title.titleCase()}\n\n${h.content}\n\n— FaithHymns"
     ctx.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text), "Share hymn"))
 }

@@ -36,7 +36,7 @@ fun shareImage(ctx: Context, h: Hymn, verse: String) {
     } while (layout.height > bottom - top && size > 22f)
     cv.save(); cv.translate(pad.toFloat(), (top + (bottom - top - layout.height).coerceAtLeast(0) / 2f)); layout.draw(cv); cv.restore()
 
-    cv.drawText("FaithHymn", pad.toFloat(), (hgt - pad).toFloat(), small)
+    cv.drawText("FaithHymns", pad.toFloat(), (hgt - pad).toFloat(), small)
 
     val dir = File(ctx.cacheDir, "shared").apply { mkdirs() }
     val f = File(dir, "hymn_${h.number}.png")
