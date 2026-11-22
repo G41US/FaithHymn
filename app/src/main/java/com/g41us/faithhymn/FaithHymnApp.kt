@@ -8,6 +8,8 @@ import com.g41us.faithhymn.data.SettingsStore
 import com.g41us.faithhymn.update.Updater
 
 class FaithHymnApp : Application() {
+    override fun onCreate() { super.onCreate(); com.g41us.faithhymn.ui.CanvasFonts.init(this) }
+
     val repo by lazy { HymnRepository(this) }
     val settings by lazy { SettingsStore(this) }
     val audio by lazy { AudioStore(this) }

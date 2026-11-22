@@ -13,11 +13,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -86,7 +89,7 @@ fun PartPill(part: Part, dim: Boolean = false) {
 @Composable
 fun DynamicBadge(d: String, onClick: (() -> Unit)? = null) {
     val c = LocalIos.current
-    Text(d, fontFamily = FontFamily.Serif, fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = c.accent,
+    Text(d, fontFamily = Serif, fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, fontSize = 14.sp, color = c.accent,
         modifier = Modifier.padding(end = 6.dp).clip(RoundedCornerShape(5.dp)).background(c.accent.copy(alpha = 0.12f))
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier).padding(horizontal = 5.dp))
 }
@@ -146,7 +149,7 @@ fun SwipeRow(
 fun Chip(text: String, selected: Boolean = false, icon: ImageVector? = null, onClick: () -> Unit) {
     val c = LocalIos.current
     Row(
-        Modifier.clip(RoundedCornerShape(50)).background(if (selected) c.accent else c.card).clickable(onClick = onClick).padding(horizontal = 14.dp, vertical = 8.dp),
+        Modifier.bounceClick(onClick).clip(RoundedCornerShape(50)).background(if (selected) c.accent else c.card).padding(horizontal = 14.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (icon != null) { Icon(icon, null, tint = if (selected) Color.White else c.accent, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(5.dp)) }
@@ -174,3 +177,14 @@ fun CompactBar(title: String, visible: Boolean, modifier: Modifier = Modifier, a
 }
 
 fun Dp.orZero() = if (this < 0.dp) 0.dp else this
+
+/** Premium press feel: the element sinks slightly while pressed, with a light haptic. */
+fun Modifier.bounceClick(onClick: () -> Unit): Modifier = this.then(Modifier.composed {
+    val src = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+    val pressed by src.collectIsPressedAsState()
+    val haptic = LocalHapticFeedback.current
+    val s by androidx.compose.animation.core.animateFloatAsState(if (pressed) 0.965f else 1f,
+        androidx.compose.animation.core.spring(dampingRatio = 0.6f, stiffness = 700f), label = "press")
+    Modifier.graphicsLayer { scaleX = s; scaleY = s }
+        .clickable(interactionSource = src, indication = null) { haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove); onClick() }
+})

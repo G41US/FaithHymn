@@ -125,7 +125,7 @@ fun SettingsScreen(app: FaithHymnApp) {
                     Text("A", fontSize = 26.sp, color = c.secondary)
                 }
                 Text("Praise to the Lord, the Almighty,\nthe King of creation!", fontSize = size.sp, lineHeight = (size * 1.45f).sp,
-                    color = c.label, fontFamily = if (s.serif) FontFamily.Serif else FontFamily.Default)
+                    color = c.label, fontFamily = if (s.serif) Serif else Sans)
                 Spacer(Modifier.height(4.dp))
                 Text("Tip: pinch on any hymn to resize.", fontSize = 13.sp, color = c.secondary)
             }

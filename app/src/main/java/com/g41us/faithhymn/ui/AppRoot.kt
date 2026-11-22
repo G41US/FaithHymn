@@ -186,22 +186,3 @@ private fun MiniPlayer(app: FaithHymnApp, onOpen: () -> Unit) {
     }
 }
 
-/** Continues the system splash: the icon pops and the screen fades into the app. */
-@Composable
-private fun AnimatedIntro(done: () -> Unit) {
-    val scale = remember { Animatable(0.7f) }
-    val alpha = remember { Animatable(1f) }
-    LaunchedEffect(Unit) {
-        scale.animateTo(1.12f, spring(dampingRatio = 0.45f, stiffness = 300f))
-        delay(120)
-        launch { scale.animateTo(1.6f, tween(300)) }
-        alpha.animateTo(0f, tween(320))
-        done()
-    }
-    Box(Modifier.fillMaxSize().graphicsLayer { this.alpha = alpha.value }.background(Brush.linearGradient(listOf(Color(0xFF8E6CFF), Color(0xFF4A3AE0)))), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(painterResource(R.drawable.ic_launcher_fg), null, Modifier.size(180.dp).scale(scale.value))
-            Text("FaithHymns", color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold, modifier = Modifier.graphicsLayer { this.alpha = ((scale.value - 0.7f) / 0.4f).coerceIn(0f, 1f) })
-        }
-    }
-}

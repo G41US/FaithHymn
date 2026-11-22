@@ -59,7 +59,7 @@ fun HymnLyrics(
 ) {
     val c = LocalIos.current
     val haptic = LocalHapticFeedback.current
-    val family = if (serif) FontFamily.Serif else FontFamily.Default
+    val family = if (serif) Serif else Sans
     Column {
         blocks.forEachIndexed { i, b ->
             val active = activeBlock == i
@@ -123,7 +123,7 @@ private fun LyricLine(line: HymnLine, first: Boolean, fontSize: Float, family: F
             buildAnnotatedString {
                 line.segments.forEachIndexed { si, s ->
                     when {
-                        s.dynamic != null -> if (showMarkings) withStyle(SpanStyle(color = c.accent, fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Serif, fontSize = (fontSize * 0.8f).sp)) { append(" ${s.dynamic} ") }
+                        s.dynamic != null -> if (showMarkings) withStyle(SpanStyle(color = c.accent, fontStyle = FontStyle.Italic, fontWeight = FontWeight.Bold, fontFamily = Serif, fontSize = (fontSize * 0.8f).sp)) { append(" ${s.dynamic} ") }
                         s.echo -> withStyle(SpanStyle(color = c.secondary, fontStyle = FontStyle.Italic)) { append(s.text) }
                         first && si == 0 -> {
                             val t = HymnFormat.softenFirstWord(s.text.trimStart())

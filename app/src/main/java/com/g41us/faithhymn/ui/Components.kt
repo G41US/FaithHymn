@@ -32,14 +32,14 @@ import com.g41us.faithhymn.data.HymnSummary
 fun LargeTitle(text: String, modifier: Modifier = Modifier, trailing: @Composable RowScope.() -> Unit = {}) {
     val c = LocalIos.current
     Row(modifier.fillMaxWidth().padding(start = 20.dp, end = 12.dp, top = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(text, fontSize = 34.sp, fontWeight = FontWeight.Bold, color = c.label, modifier = Modifier.weight(1f))
+        Text(text, fontSize = 34.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.8).sp, color = c.label, modifier = Modifier.weight(1f), maxLines = 1)
         trailing()
     }
 }
 
 @Composable
 fun SectionHeader(text: String) {
-    Text(text.uppercase(), fontSize = 13.sp, color = LocalIos.current.secondary,
+    Text(text.uppercase(), fontSize = 12.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 0.8.sp, color = LocalIos.current.secondary,
         modifier = Modifier.padding(start = 36.dp, end = 20.dp, top = 22.dp, bottom = 7.dp))
 }
 
@@ -94,12 +94,12 @@ fun HymnRow(h: HymnSummary, onClick: () -> Unit, audio: Boolean = false, offline
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.size(44.dp).clip(RoundedCornerShape(10.dp)).background(c.accent.copy(alpha = if (c.dark) 0.25f else 0.12f)), contentAlignment = Alignment.Center) {
-            Text("${h.number}", color = c.accent, fontWeight = FontWeight.SemiBold, fontSize = if (h.number >= 1000) 13.sp else 15.sp)
+            Text("${h.number}", color = c.accent, fontWeight = FontWeight.ExtraBold, fontSize = if (h.number >= 1000) 13.sp else 15.sp, letterSpacing = (-0.3).sp, style = androidx.compose.ui.text.TextStyle(fontFeatureSettings = "tnum"))
         }
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             androidx.compose.foundation.layout.Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(h.title.titleCase(), fontSize = 17.sp, fontWeight = FontWeight.Medium, color = c.label, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                Text(h.title.titleCase(), fontSize = 16.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.2).sp, color = c.label, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
                 if (offline) Icon(androidx.compose.material.icons.Icons.Rounded.DownloadDone, "Saved offline", tint = c.accent, modifier = Modifier.padding(start = 6.dp).size(15.dp))
                 else if (audio) Icon(androidx.compose.material.icons.Icons.Rounded.Headphones, "Has recording", tint = c.accent, modifier = Modifier.padding(start = 6.dp).size(15.dp))
             }

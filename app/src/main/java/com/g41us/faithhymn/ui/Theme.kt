@@ -71,5 +71,7 @@ fun FaithHymnTheme(mode: ThemeMode, accent: Int, content: @Composable () -> Unit
     val ios = iosColors(resolveDark(mode), mode == ThemeMode.NIGHT, accent)
     val scheme = if (ios.dark) darkColorScheme(primary = ios.accent, background = ios.bg, surface = ios.card, onSurface = ios.label, onBackground = ios.label, surfaceContainer = ios.card, surfaceContainerHigh = ios.card, surfaceContainerLow = ios.card)
                  else lightColorScheme(primary = ios.accent, background = ios.bg, surface = ios.card, onSurface = ios.label, onBackground = ios.label, surfaceContainer = ios.card, surfaceContainerHigh = ios.card, surfaceContainerLow = ios.card)
-    CompositionLocalProvider(LocalIos provides ios) { MaterialTheme(colorScheme = scheme, content = content) }
+    CompositionLocalProvider(LocalIos provides ios) { MaterialTheme(colorScheme = scheme, typography = AppTypography) {
+            androidx.compose.material3.ProvideTextStyle(AppTypography.bodyLarge, content)
+        } }
 }

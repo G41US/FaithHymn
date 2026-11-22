@@ -26,12 +26,13 @@ fun renderVerseCard(h: Hymn, verse: String, style: CardStyle, scale: Float = 1f)
     val cv = Canvas(bmp)
     cv.drawPaint(Paint().apply { shader = LinearGradient(0f, 0f, w.toFloat(), hgt.toFloat(), style.colors, null, Shader.TileMode.CLAMP) })
     // Big faint quote mark
-    cv.drawText("“", w - pad * 2.2f, pad * 2.6f, TextPaint(Paint.ANTI_ALIAS_FLAG).apply { color = style.text; alpha = 28; textSize = 420f * scale; typeface = Typeface.SERIF })
+    cv.drawText("“", w - pad * 2.2f, pad * 2.6f, TextPaint(Paint.ANTI_ALIAS_FLAG).apply { color = style.text; alpha = 28; textSize = 420f * scale; typeface = CanvasFonts.serifBold })
 
-    val small = TextPaint(Paint.ANTI_ALIAS_FLAG).apply { color = style.sub; textSize = 34f * scale; typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD); letterSpacing = 0.12f }
+    val small = TextPaint(Paint.ANTI_ALIAS_FLAG).apply { color = style.sub; textSize = 34f * scale; typeface = CanvasFonts.sansBold; letterSpacing = 0.12f }
     cv.drawText("HYMN ${h.number}", pad, pad + 40 * scale, small)
-    val face = if (style.serif) Typeface.SERIF else Typeface.DEFAULT
-    val title = TextPaint(Paint.ANTI_ALIAS_FLAG).apply { color = style.text; textSize = 58f * scale; typeface = Typeface.create(face, Typeface.BOLD) }
+    val face = if (style.serif) CanvasFonts.serif else CanvasFonts.sans
+    val faceBold = if (style.serif) CanvasFonts.serifBold else CanvasFonts.sansBold
+    val title = TextPaint(Paint.ANTI_ALIAS_FLAG).apply { color = style.text; textSize = 58f * scale; typeface = faceBold }
     val t = h.title.titleCase()
     val tl = StaticLayout.Builder.obtain(t, 0, t.length, title, (w - pad * 2).toInt()).setMaxLines(2).setEllipsize(android.text.TextUtils.TruncateAt.END).build()
     cv.save(); cv.translate(pad, pad + 70 * scale); tl.draw(cv); cv.restore()

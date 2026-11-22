@@ -153,7 +153,7 @@ private fun HymnPage(app: FaithHymnApp, n: Int, fontSize: Float, serif: Boolean,
     val h = hymn ?: return
     var size by remember(fontSize) { mutableFloatStateOf(fontSize) }
     val scroll = rememberScrollState()
-    val family = if (serif) FontFamily.Serif else FontFamily.Default
+    val family = if (serif) Serif else Sans
     val blocks = h.parsed
     val hasParts = remember(blocks) { blocks.any { b -> b.lines.any { it.part != null && !it.part.everyone } } }
     val hasMarks = remember(blocks) { hasParts || blocks.any { b -> b.dynamic != null || b.lines.any { it.dynamic != null } } }
@@ -198,7 +198,7 @@ private fun HymnPage(app: FaithHymnApp, n: Int, fontSize: Float, serif: Boolean,
                 modifier = Modifier.clip(RoundedCornerShape(6.dp)).clickable(onClick = onKey).padding(horizontal = 6.dp, vertical = 2.dp))
         }
         Spacer(Modifier.height(4.dp))
-        Text(h.title.titleCase(), fontSize = (size * 1.4f).sp, fontWeight = FontWeight.Bold, color = c.label, fontFamily = family, lineHeight = (size * 1.65f).sp)
+        Text(h.title.titleCase(), fontSize = (size * 1.4f).sp, fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.5).sp, color = c.label, fontFamily = Sans, lineHeight = (size * 1.6f).sp)
         if (hasParts) PartFilter(myPart) { v -> app.settings.update { it.copy(myPart = v) } }
         Spacer(Modifier.height(14.dp))
         Box(Modifier.androidxOnPositioned { lyricsTop = it }) {

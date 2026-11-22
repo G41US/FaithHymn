@@ -83,7 +83,7 @@ fun LibraryScreen(app: FaithHymnApp, open: (Int) -> Unit, openPlaylist: (Long) -
             1 -> LazyVerticalGrid(GridCells.Fixed(2), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = bottom),
                 horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 items(lists, key = { it.id }) { p ->
-                    Column(Modifier.clickable { openPlaylist(p.id) }) {
+                    Column(Modifier.bounceClick { openPlaylist(p.id) }) {
                         PlaylistCover(p.name, p.color, Modifier.fillMaxWidth().aspectRatio(1f).shadow(6.dp, RoundedCornerShape(14.dp)), numbers = p.preview)
                         Text(p.name, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = c.label, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 6.dp))
                         Text(listOfNotNull(prettyDate(p.serviceDate), "${p.count} hymn${if (p.count == 1) "" else "s"}").joinToString(" · "), fontSize = 13.sp, color = c.secondary, maxLines = 1)
@@ -117,7 +117,7 @@ fun LibraryScreen(app: FaithHymnApp, open: (Int) -> Unit, openPlaylist: (Long) -
 @Composable
 private fun FavTile(h: HymnSummary, onClick: () -> Unit) {
     val c = LocalIos.current
-    Column(Modifier.clip(RoundedCornerShape(14.dp)).background(c.card).clickable(onClick = onClick).padding(14.dp).height(110.dp)) {
+    Column(Modifier.bounceClick(onClick).clip(RoundedCornerShape(14.dp)).background(c.card).padding(14.dp).height(110.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("${h.number}", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = c.accent, modifier = Modifier.weight(1f))
             Icon(Icons.Rounded.Favorite, null, tint = c.red, modifier = Modifier.size(16.dp))

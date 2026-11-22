@@ -79,7 +79,7 @@ fun HymnsScreen(app: FaithHymnApp, open: (Int) -> Unit) {
                     SectionHeader("Recently opened")
                     LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         items(recent, key = { it.number }) { h ->
-                            Column(Modifier.width(150.dp).clip(RoundedCornerShape(12.dp)).background(c.card).clickable { open(h.number) }.padding(12.dp)) {
+                            Column(Modifier.width(150.dp).bounceClick { open(h.number) }.clip(RoundedCornerShape(14.dp)).background(c.card).padding(12.dp)) {
                                 Text("${h.number}", color = c.accent, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                                 Text(h.title.titleCase(), color = c.label, fontSize = 14.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.height(38.dp))
                             }
@@ -140,7 +140,7 @@ private fun TodayCard(app: FaithHymnApp, h: Hymn, available: Set<Int>, open: (In
     val first = h.parsed.firstOrNull()?.lines?.take(2)?.joinToString("\n") { it.plain.trim() } ?: h.firstLine
     Box(
         Modifier.padding(horizontal = 16.dp, vertical = 6.dp).fillMaxWidth().shadow(12.dp, RoundedCornerShape(22.dp), spotColor = Color(0xFF4A3AE0))
-            .clip(RoundedCornerShape(22.dp)).background(Brush.linearGradient(CoverGradients[0])).clickable { open(h.number) }.padding(20.dp)
+            .clip(RoundedCornerShape(22.dp)).background(Brush.linearGradient(CoverGradients[0])).padding(0.dp).bounceClick { open(h.number) }.padding(20.dp)
     ) {
         Text("${h.number}", fontSize = 110.sp, fontWeight = FontWeight.Black, color = Color.White.copy(alpha = 0.10f),
             modifier = Modifier.align(Alignment.TopEnd).offset(x = 12.dp, y = (-30).dp))
@@ -153,7 +153,7 @@ private fun TodayCard(app: FaithHymnApp, h: Hymn, available: Set<Int>, open: (In
             Text(h.title.titleCase(), fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Color.White, lineHeight = 30.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
             Spacer(Modifier.height(8.dp))
             Text(com.g41us.faithhymn.data.HymnFormat.softenFirstWord(first), fontSize = 16.sp, color = Color.White.copy(alpha = 0.88f), lineHeight = 22.sp,
-                fontFamily = androidx.compose.ui.text.font.FontFamily.Serif, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                fontFamily = Serif, maxLines = 2, overflow = TextOverflow.Ellipsis)
             Spacer(Modifier.height(16.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(Modifier.clip(RoundedCornerShape(12.dp)).background(Color.White).clickable { open(h.number) }.padding(horizontal = 18.dp, vertical = 10.dp),

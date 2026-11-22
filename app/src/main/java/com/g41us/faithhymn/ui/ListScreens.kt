@@ -120,7 +120,7 @@ fun NameDialog(title: String, initial: String, onDismiss: () -> Unit, onSave: (S
 @Composable
 fun PillButton(text: String, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier, tint: Color? = null, onClick: () -> Unit) {
     val c = LocalIos.current
-    Row(modifier.height(44.dp).clip(RoundedCornerShape(12.dp)).background(c.card).clickable(onClick = onClick), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier.height(46.dp).bounceClick(onClick).clip(RoundedCornerShape(14.dp)).background(c.card), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         Icon(icon, null, tint = tint ?: c.accent, modifier = Modifier.size(20.dp)); Spacer(Modifier.width(6.dp))
         Text(text, color = tint ?: c.accent, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
     }

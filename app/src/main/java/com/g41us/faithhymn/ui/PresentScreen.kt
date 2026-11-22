@@ -166,12 +166,12 @@ private fun SlideView(s: Slide?, next: Slide?, settings: AppSettings, bg: Bitmap
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (s.block.kind == com.g41us.faithhymn.data.BlockKind.CHORUS)
                         Text("CHORUS", color = Color.White.copy(alpha = 0.5f), fontSize = (fs * 0.35f).coerceAtLeast(11f).sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
-                    Text(s.text, color = Color.White, fontSize = fs.sp, lineHeight = (fs * 1.35f).sp, textAlign = TextAlign.Center, fontFamily = FontFamily.Serif)
+                    Text(s.text, color = Color.White, fontSize = fs.sp, lineHeight = (fs * 1.35f).sp, textAlign = TextAlign.Center, fontFamily = Serif)
                 }
             }
             if (leader && next != null) Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(Color.White.copy(alpha = 0.08f)).padding(12.dp)) {
                 Text(if (next.hymn.number != s.hymn.number) "NEXT · HYMN ${next.hymn.number}" else "NEXT", color = Color.White.copy(alpha = 0.5f), fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
-                Text(next.text.lines().take(2).joinToString("\n"), color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp, fontFamily = FontFamily.Serif, maxLines = 2)
+                Text(next.text.lines().take(2).joinToString("\n"), color = Color.White.copy(alpha = 0.7f), fontSize = 15.sp, fontFamily = Serif, maxLines = 2)
             }
             Text("${s.hymn.number} · ${s.hymn.title.titleCase()}  —  ${s.index + 1}/${s.hymn.parsed.size}",
                 color = Color.White.copy(alpha = 0.45f), fontSize = 13.sp, fontWeight = FontWeight.Medium, modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 10.dp))
@@ -188,10 +188,10 @@ private fun RemoteView(cur: Slide?, next: Slide?, i: Int, total: Int, tvName: St
         }
         Spacer(Modifier.height(16.dp))
         Text("NOW · ${i + 1}/$total", color = Color.White.copy(alpha = 0.5f), fontSize = 12.sp, fontWeight = FontWeight.Bold)
-        Text(cur?.text ?: "", color = Color.White, fontSize = 22.sp, fontFamily = FontFamily.Serif, lineHeight = 30.sp, modifier = Modifier.weight(1f).padding(vertical = 8.dp))
+        Text(cur?.text ?: "", color = Color.White, fontSize = 22.sp, fontFamily = Serif, lineHeight = 30.sp, modifier = Modifier.weight(1f).padding(vertical = 8.dp))
         if (next != null) {
             Text("NEXT", color = Color.White.copy(alpha = 0.5f), fontSize = 12.sp, fontWeight = FontWeight.Bold)
-            Text(next.text.lines().take(3).joinToString("\n"), color = Color.White.copy(alpha = 0.6f), fontSize = 16.sp, fontFamily = FontFamily.Serif, maxLines = 3)
+            Text(next.text.lines().take(3).joinToString("\n"), color = Color.White.copy(alpha = 0.6f), fontSize = 16.sp, fontFamily = Serif, maxLines = 3)
         }
         Row(Modifier.padding(top = 16.dp).height(96.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Box(Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(20.dp)).background(Color.White.copy(alpha = 0.1f)).clickable { go(-1) }, contentAlignment = Alignment.Center) {
