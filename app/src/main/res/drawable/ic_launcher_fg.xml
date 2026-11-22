@@ -1,0 +1,11 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <!-- open book -->
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M32,40c6,-2 13,-2 20,2v30c-7,-4 -14,-4 -20,-2z"/>
+    <path android:fillColor="#E6FFFFFF"
+        android:pathData="M76,40c-6,-2 -13,-2 -20,2v30c7,-4 14,-4 20,-2z"/>
+    <!-- music note -->
+    <path android:fillColor="#FF5B47F0"
+        android:pathData="M64,46l8,-2v14a3.5,3 0 1,1 -2,-2.6v-8.4l-4,1v10a3.5,3 0 1,1 -2,-2.6z"/>
+</vector>
